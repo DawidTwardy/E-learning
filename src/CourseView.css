@@ -1,0 +1,133 @@
+.course-view-container {
+    background-color: #121212;
+    color: #ffffff;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    position: relative;
+    z-index: 1; /* Poniżej headera */
+}
+
+.course-view-content {
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 1200px;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* LEWA STRONA — wideo / PDF / notatki */
+.video-section {
+    flex: 3;
+    background-color: #2a2a2a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    margin-right: 20px;
+    overflow: hidden;
+    height: 450px;
+}
+
+.video-frame,
+.pdf-container,
+.notes-container,
+.video-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-color: #1a1a1a;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.pdf-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* PRAWA STRONA — sekcje kursu */
+.course-sections {
+    flex: 1;
+    background-color: #292929;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #333;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.section-title:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+.section-title.active {
+    background-color: #4caf50;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+}
+
+.section-lessons {
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.section-lessons p {
+    font-size: 15px;
+    color: #ccc;
+    margin: 6px 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.section-lessons p:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+}
+
+.section-lessons p.active {
+    background-color: #2196f3;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+}
+
+/* PRZYCISK POWROTU */
+.back-button {
+    margin-top: auto;
+    align-self: flex-start;
+    padding: 10px 20px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #666;
+}
