@@ -1,73 +1,60 @@
 import React from 'react';
-import './App.css'; 
-import './InstructorsPage.css'; 
+import './App.css';
+import './InstructorProfilePage.css';
+import { CourseCard, StarRating } from './App.jsx';
 
-const instructorsData = [
-  { 
-    id: 1,
-    name: "Michał Nowak", 
-    avatarSrc: "/src/icon/usericon.png", 
-    bio: "Ekspert w dziedzinie baz danych z 10-letnim doświadczeniem. Pasjonat czystego kodu i efektywnych zapytań SQL. Autor bestsellerowych kursów o programowaniu.",
-    topCourses: [
-      "Kurs Nauki SQL",
-      "Kurs AI",
-      "Kurs .Net Core"
-    ]
-  },
-  { 
-    id: 2,
-    name: "Jan Kowalski", 
-    avatarSrc: "/src/icon/usericon.png", 
-    bio: "Programista Python z zamiłowaniem do uczenia maszynowego i analizy danych. W wolnym czasie tworzy aplikacje webowe i uczy innych.",
-    topCourses: [
-      "Kurs Pythona",
-      "Drugi Najlepiej Oceniany kurs",
-      "Trzeci Najlepiej Oceniany kurs"
-    ]
-  }
-];
-
-const InstructorCard = ({ instructor, onClick }) => (
-  <div className="instructor-card" onClick={onClick}>
-    <div className="instructor-avatar-container">
-      <img 
-        src={instructor.avatarSrc} 
-        alt={`Awatar ${instructor.name}`} 
-        className="instructor-avatar" 
-      />
-    </div>
-    
-    <h3 className="instructor-name">{instructor.name}</h3>
-    
-    <div className="instructor-courses">
-      {instructor.topCourses.map((course, index) => (
-        <p key={index} className="course-list-item">
-          {course}
-        </p>
-      ))}
-      <a href="#wszystkie" className="show-all-courses" onClick={(e) => e.stopPropagation()}>
-        Pokaż Wszystkie kursy
-      </a>
-    </div>
-  </div>
-);
-
-const InstructorsPage = ({ onInstructorClick }) => {
+const InstructorProfilePage = ({ instructor, courses, onCourseClick, onBack }) => {
   return (
     <main className="main-content">
-      <h2 className="page-title">Instruktorzy</h2> 
-      
-      <div className="instructor-list">
-        {instructorsData.map((instructor) => (
-          <InstructorCard 
-            key={instructor.id} 
-            instructor={instructor} 
-            onClick={() => onInstructorClick(instructor)}
+      <div className="profile-header-container">
+        <button className="profile-back-button" onClick={onBack}>
+          &larr; Wszyscy Instruktorzy
+        </button>
+        <div className="profile-header-content">
+          <img 
+            src={instructor.avatarSrc || '/src/icon/usericon.png'} 
+            alt={instructor.name}
+            className="profile-avatar-large"
+            onError={(e) => { e.target.onerror = null; e.target.src = '/src/icon/usericon.png' }}
           />
-        ))}
+          <div className="profile-header-info">
+            <h1 className="profile-name">{instructor.name}</h1>
+            <p className="profile-bio">{instructor.bio || "Instruktor nie dodał jeszcze swojej biografii."}</p>
+            <div className="profile-stats">
+              <div className="profile-stat-item">
+                <span className="stat-value">4.7</span>
+                <StarRating rating={4.7} />
+                <span className="stat-label">Średnia ocena</span>
+              </div>
+              <div className="profile-stat-item">
+                <span className="stat-value">12,345</span>
+                <span className="stat-label">Studenci</span>
+              </div>
+              <div className="profile-stat-item">
+                <span className="stat-value">{courses.length}</span>
+                <span className="stat-label">Kursy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="profile-courses-container">
+        <h2 className="profile-courses-title">Kursy prowadzone przez {instructor.name}</h2>
+        <div className="courses-list">
+          {courses.map((course) => (
+            <CourseCard 
+              key={course.id} 
+              course={course}
+              onClick={() => onCourseClick(course)}
+              showInstructor={false}
+              showFavoriteButton={true}
+            />
+          ))}
+        </div>
       </div>
     </main>
   );
 };
 
-export default InstructorsPage;
+export default InstructorProfilePage;

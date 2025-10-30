@@ -18,6 +18,12 @@ import SearchResultsPage from './SearchResultsPage.jsx';
 import './SearchResultsPage.css';
 import InstructorProfilePage from './InstructorProfilePage.jsx';
 import './InstructorProfilePage.css';
+import CourseRatingForm from './CourseRatingForm.jsx';
+import './CourseRatingForm.css';
+import NotificationsDropdown from './NotificationsDropdown.jsx';
+import './NotificationsDropdown.css';
+import CertificatePage from './CertificatePage.jsx';
+import './CertificatePage.css';
 
 
 const PAGE_HOME = 'home';
@@ -79,7 +85,7 @@ export const FavoriteHeart = ({ isFavorite, onToggle }) => {
     );
 };
 
-export const CourseCard = ({ course, onClick, isFavorite, onFavoriteToggle, showInstructor = true, onEdit, showFavoriteButton = true, progress }) => {
+export const CourseCard = ({ course, onClick, isFavorite, onFavoriteToggle, showInstructor = true, onEdit, showFavoriteButton = true, progress, onShowCertificate }) => {
     const isCompleted = progress === 100;
     
     return (
@@ -128,6 +134,12 @@ export const CourseCard = ({ course, onClick, isFavorite, onFavoriteToggle, show
                     Edytuj
                 </button>
             )}
+
+            {onShowCertificate && (
+                <button className="card-certificate-button" onClick={(e) => { e.stopPropagation(); onShowCertificate(); }}>
+                    Zobacz Certyfikat
+                </button>
+            )}
         </div>
     );
 };
@@ -154,7 +166,17 @@ const Header = ({
     handleSearchSubmit 
 }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const toggleMenu = () => setIsMenuOpen(prev => !prev);
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMenuOpen(prev => !prev);
+        setIsNotificationsOpen(false);
+    };
+    
+    const toggleNotifications = () => {
+        setIsNotificationsOpen(prev => !prev);
+        setIsMenuOpen(false);
+    };
 
     const handleLogout = () => {
         setIsLoggedIn(false);
@@ -261,11 +283,15 @@ const Header = ({
                                 onClick={() => navigateToPage(PAGE_FAVORITES)} 
                                 style={{ cursor: 'pointer' }}
                             /> 
-                            <img 
-                                src="/src/icon/notification.png" 
-                                alt="Powiadomienia" 
-                                className="action-icon-image notification-icon-image" 
-                            />
+                            <div className="notification-icon-wrapper">
+                                <img 
+                                    src="/src/icon/notification.png" 
+                                    alt="Powiadomienia" 
+                                    className="action-icon-image notification-icon-image"
+                                    onClick={toggleNotifications}
+                                />
+                                <div className="notification-dot"></div>
+                            </div>
                             <img 
                                 src="/src/icon/usericon.png" 
                                 alt="Profil" 
@@ -275,6 +301,7 @@ const Header = ({
                         </>
                     )}
                     {isMenuOpen && isLoggedIn && <LoggedInMenu handleLogout={handleLogout} navigateToPage={navigateToPage} />}
+                    {isNotificationsOpen && isLoggedIn && <NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />}
                 </div>
             </div>
         </header>
@@ -287,9 +314,12 @@ const App = () => {
     const [viewingCourse, setViewingCourse] = useState(null);
     const [detailsCourse, setDetailsCourse] = useState(null);
     const [editingCourse, setEditingCourse] = useState(null);
+    const [ratingCourse, setRatingCourse] = useState(null);
+    const [viewingCertificate, setViewingCertificate] = useState(null);
     const [isAddingCourse, setIsAddingCourse] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedInstructor, setSelectedInstructor] = useState(null);
+    const [isInstructorView, setIsInstructorView] = useState(false);
 
     const [dummyFavorites, setDummyFavorites] = useState({});
     const toggleDummyFavorite = (title) => {
@@ -306,6 +336,9 @@ const App = () => {
         setIsAddingCourse(false);
         setSearchQuery('');
         setSelectedInstructor(null);
+        setRatingCourse(null);
+        setIsInstructorView(false);
+        setViewingCertificate(null);
         setCurrentPage(page);
     };
 
@@ -323,6 +356,9 @@ const App = () => {
         setEditingCourse(null);
         setIsAddingCourse(false);
         setSelectedInstructor(null);
+        setRatingCourse(null);
+        setIsInstructorView(false);
+        setViewingCertificate(null);
         if (currentPage === PAGE_PROFILE) {
             navigateToPage(PAGE_HOME);
         }
@@ -340,6 +376,7 @@ const App = () => {
     const handleEnroll = (course) => {
         console.log(`Zapisano na kurs: ${course.title}`);
         setDetailsCourse(null);
+        setIsInstructorView(false);
         setViewingCourse(course);
     };
     
@@ -355,10 +392,57 @@ const App = () => {
         setEditingCourse(null);
         setIsAddingCourse(false);
         setSelectedInstructor(null);
+        setRatingCourse(null);
+        setIsInstructorView(false);
+        setViewingCertificate(null);
         setCurrentPage(PAGE_SEARCH_RESULTS);
+    };
+    
+    const handleStartRating = (course) => {
+        setRatingCourse(course);
+    };
+    
+    const handleSubmitRating = (courseTitle, rating) => {
+        alert(`Dziękujemy za ocenę ${rating} gwiazdek dla kursu: ${courseTitle}!`);
+        handleBackFromViews();
+        navigateToPage(PAGE_MY_LEARNING);
+    };
+
+    const handleViewCourseAsStudent = (course) => {
+        setIsInstructorView(false);
+        setViewingCourse(course);
+    };
+
+    const handleViewCourseAsInstructor = (course) => {
+        setIsInstructorView(true);
+        setViewingCourse(course);
+    };
+    
+    const handleShowCertificate = (course) => {
+        setViewingCertificate(course);
     };
 
     const renderPageContent = () => {
+        if (viewingCertificate) {
+            return (
+                <CertificatePage
+                    course={viewingCertificate}
+                    userName="Jan Kowalski"
+                    onBack={handleBackFromViews}
+                />
+            );
+        }
+        
+        if (ratingCourse) {
+            return (
+                <CourseRatingForm 
+                    course={ratingCourse}
+                    onBack={handleBackFromViews}
+                    onSubmitRating={handleSubmitRating}
+                />
+            );
+        }
+        
         if (isAddingCourse) {
             return (
                 <CourseAddPage 
@@ -392,6 +476,8 @@ const App = () => {
                 <CourseView 
                     course={viewingCourse} 
                     onBack={handleBackFromViews} 
+                    onStartRating={handleStartRating}
+                    isInstructorView={isInstructorView}
                 />
             );
         }
@@ -422,14 +508,15 @@ const App = () => {
             case PAGE_MY_LEARNING:
                 return (
                     <MyLearningPage
-                        onCourseClick={setViewingCourse}
+                        onCourseClick={handleViewCourseAsStudent}
                         onNavigateToHome={() => navigateToPage(PAGE_HOME)}
+                        onShowCertificate={handleShowCertificate}
                     />
                 );
             case PAGE_MY_COURSES:
                 return (
                     <MyCoursesPage 
-                        setSelectedCourse={setViewingCourse}
+                        setSelectedCourse={handleViewCourseAsInstructor}
                         onNavigateToHome={() => navigateToPage(PAGE_HOME)} 
                         onStartEdit={handleStartEdit}
                         onStartAddCourse={handleStartAddCourse}

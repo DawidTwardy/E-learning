@@ -270,3 +270,18 @@ body {
     height: 50px;
     width: auto;
 }
+.notification-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 10px;
+    height: 10px;
+    background-color: #FF6B6B;
+    border-radius: 50%;
+    border: 2px solid #1B1B1B;
+}

@@ -45,3 +45,23 @@
     border-color: #E0E0E0;
     color: #FFFFFF;
 }
+
+.card-certificate-button {
+    background-color: #007BFF;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-size: 0.85em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 15px; 
+    margin-left: 5px; 
+    width: calc(100% - 10px);
+    box-sizing: border-box;
+}
+
+.card-certificate-button:hover {
+    background-color: #0056b3;
+}

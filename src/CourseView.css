@@ -16,22 +16,31 @@
     flex-direction: row;
     justify-content: space-between;
     width: 90%;
-    max-width: 1200px;
+    max-width: 1400px;
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    gap: 30px;
+}
+
+.lesson-content-wrapper {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .video-section {
-    flex: 3;
+    flex: none;
     background-color: #2a2a2a;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
-    margin-right: 20px;
+    margin-right: 0;
     overflow: hidden;
     height: 450px;
+    width: 100%;
 }
 
 .video-frame,
@@ -60,6 +69,8 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    min-width: 280px;
+    align-self: flex-start;
 }
 
 .section-title {
@@ -119,9 +130,28 @@
     box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
 }
 
+.rate-course-button {
+    margin-top: auto;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    background-color: #f3b421;
+    color: #1e1e1e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s;
+    width: 100%;
+}
+
+.rate-course-button:hover {
+    background-color: #ffc107;
+    transform: scale(1.02);
+}
 
 .back-button {
-    margin-top: auto;
+    margin-top: 0;
     align-self: flex-start;
     padding: 10px 20px;
     background-color: #444;
@@ -131,8 +161,24 @@
     cursor: pointer;
     font-size: 15px;
     transition: background-color 0.3s ease;
+    width: 100%;
 }
 
 .back-button:hover {
     background-color: #666;
+}
+
+@media (max-width: 1100px) {
+    .course-view-content {
+        flex-direction: column;
+        width: 100%;
+        max-width: 900px;
+    }
+    .course-sections {
+        min-width: 100%;
+        order: -1;
+    }
+    .lesson-content-wrapper {
+        width: 100%;
+    }
 }

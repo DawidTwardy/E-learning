@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './CourseView.css';
 import QuizView from './QuizView.jsx';
+import DiscussionThread from './DiscussionThread.jsx';
 
-const CourseView = ({ course, onBack }) => {
+const CourseView = ({ course, onBack, onStartRating, isInstructorView }) => {
   const [activeSection, setActiveSection] = useState(1);
   const [selectedLesson, setSelectedLesson] = useState('lesson1');
   const [isTakingQuiz, setIsTakingQuiz] = useState(false);
@@ -90,8 +91,11 @@ const CourseView = ({ course, onBack }) => {
     <div className="course-view-container">
       <div className="course-view-content">
         
-        <div className="video-section">
-          {renderLessonContent()}
+        <div className="lesson-content-wrapper">
+          <div className="video-section">
+            {renderLessonContent()}
+          </div>
+          <DiscussionThread isInstructorView={isInstructorView} />
         </div>
 
         <div className="course-sections">
@@ -158,6 +162,10 @@ const CourseView = ({ course, onBack }) => {
             </div>
           )}
 
+          <button className="rate-course-button" onClick={() => onStartRating(course)}>
+            Oceń ten kurs
+          </button>
+          
           <button className="back-button" onClick={onBack}>
             Powrót
           </button>

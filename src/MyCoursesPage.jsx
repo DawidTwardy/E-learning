@@ -1,12 +1,40 @@
 import React, { useState } from 'react';
 import './App.css'; 
 import './Favorites.css'; 
-import { CourseCard } from './App.jsx';
+import { CourseCard, StarRating } from './App.jsx';
+import './InstructorDashboard.css';
 
 const initialMyCoursesData = [
   { id: 1, title: "Kurs Nauki SQL", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_sql.png", iconColor: "#007BFF" },
   { id: 2, title: "Kurs Pythona", instructor: "Jan Kowalski", rating: 4.5, imageSrc: "/src/course/placeholder_python.png", iconColor: "#FFC107" },
 ];
+
+const InstructorDashboardStats = ({ courses }) => {
+  const totalCourses = courses.length;
+  const averageRating = courses.reduce((acc, course) => acc + course.rating, 0) / totalCourses || 0;
+  const totalStudents = totalCourses * 150; 
+
+  return (
+    <div className="dashboard-stats-container">
+      <div className="stat-card">
+        <span className="stat-card-title">Łączna liczba studentów</span>
+        <span className="stat-card-value">{totalStudents.toLocaleString('pl-PL')}</span>
+      </div>
+      <div className="stat-card">
+        <span className="stat-card-title">Średnia ocena kursów</span>
+        <div className="stat-card-rating">
+          <span className="stat-card-value">{averageRating.toFixed(1)}</span>
+          <StarRating rating={averageRating} />
+        </div>
+      </div>
+      <div className="stat-card">
+        <span className="stat-card-title">Liczba kursów</span>
+        <span className="stat-card-value">{totalCourses}</span>
+      </div>
+    </div>
+  );
+};
+
 
 const EmptyCreatedCoursesMessage = ({ onStartAddCourse }) => {
   return (
@@ -41,27 +69,35 @@ const MyCoursesPage = ({ setSelectedCourse, onNavigateToHome, onStartEdit, onSta
   return (
     <main className="main-content">
       <div className="page-header-actions">
-        <h2 className="page-title" style={{ marginBottom: 0 }}>Moje Stworzone Kursy</h2>
+        <h2 className="page-title" style={{ marginBottom: 0 }}>Panel Instruktora</h2>
         {myCourses.length > 0 && (
           <button className="add-course-button" onClick={onStartAddCourse}>
             Dodaj nowy kurs
           </button>
         )}
       </div>
-      
+
       {myCourses.length > 0 ? (
-        <div className="courses-list">
-          {myCourses.map((course) => (
-            <CourseCard 
-              key={course.id} 
-              course={course}
-              onClick={() => setSelectedCourse(course)}
-              showInstructor={false}
-              onEdit={() => handleEditCourse(course)}
-              showFavoriteButton={false}
-            />
-          ))}
-        </div>
+        <>
+          <InstructorDashboardStats courses={myCourses} />
+          
+          <h3 className="learning-section-title" style={{fontSize: '1.3em', marginTop: '40px'}}>
+            Zarządzaj swoimi kursami ({myCourses.length})
+          </h3>
+          
+          <div className="courses-list">
+            {myCourses.map((course) => (
+              <CourseCard 
+                key={course.id} 
+                course={course}
+                onClick={() => setSelectedCourse(course)}
+                showInstructor={false}
+                onEdit={() => handleEditCourse(course)}
+                showFavoriteButton={false}
+              />
+            ))}
+          </div>
+        </>
       ) : (
         <EmptyCreatedCoursesMessage onNavigateToHome={onNavigateToHome} onStartAddCourse={onStartAddCourse} />
       )}

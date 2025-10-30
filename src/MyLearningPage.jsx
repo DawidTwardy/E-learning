@@ -35,7 +35,7 @@ const EmptyLearningMessage = ({ onNavigateToHome }) => {
   );
 };
 
-const MyLearningPage = ({ onCourseClick, onNavigateToHome }) => {
+const MyLearningPage = ({ onCourseClick, onNavigateToHome, onShowCertificate }) => {
   const [enrolledCourses, setEnrolledCourses] = useState([...inProgressCoursesData, ...completedCoursesData]);
 
   const inProgress = enrolledCourses.filter(c => c.progress < 100);
@@ -75,10 +75,11 @@ const MyLearningPage = ({ onCourseClick, onNavigateToHome }) => {
               <CourseCard 
                 key={course.id} 
                 course={course}
-                onClick={() => onCourseClick(course)}
+                onClick={null}
                 showInstructor={true}
                 showFavoriteButton={false}
                 progress={course.progress}
+                onShowCertificate={() => onShowCertificate(course)}
               />
             ))}
           </div>
