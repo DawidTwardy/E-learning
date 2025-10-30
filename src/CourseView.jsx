@@ -1,17 +1,39 @@
 import React, { useState } from 'react';
 import './CourseView.css';
+import QuizView from './QuizView.jsx';
 
 const CourseView = ({ course, onBack }) => {
-  // Domyślnie aktywna Sekcja 1 i Lekcja 1
   const [activeSection, setActiveSection] = useState(1);
   const [selectedLesson, setSelectedLesson] = useState('lesson1');
+  const [isTakingQuiz, setIsTakingQuiz] = useState(false);
 
   const toggleSection = (section) => {
-    // Jeśli klikniesz w tę samą sekcję, zwinie się
     setActiveSection(activeSection === section ? null : section);
   };
 
+  const selectContent = (lessonId) => {
+    setIsTakingQuiz(false);
+    setSelectedLesson(lessonId);
+  };
+
+  const startQuiz = () => {
+    setIsTakingQuiz(true);
+    setSelectedLesson(null);
+  };
+
+  const handleQuizComplete = (score, total) => {
+    alert(`Ukończyłeś quiz! Twój wynik: ${score} / ${total}`);
+    setIsTakingQuiz(false);
+    setSelectedLesson('lesson1');
+  };
+
   const renderLessonContent = () => {
+    if (isTakingQuiz) {
+      return (
+        <QuizView onQuizComplete={handleQuizComplete} />
+      );
+    }
+    
     switch (selectedLesson) {
       case 'lesson1':
         return (
@@ -68,12 +90,10 @@ const CourseView = ({ course, onBack }) => {
     <div className="course-view-container">
       <div className="course-view-content">
         
-        {/* LEWA STRONA — ZAWARTOŚĆ LEKCJI */}
         <div className="video-section">
           {renderLessonContent()}
         </div>
 
-        {/* PRAWA STRONA — SEKCJE */}
         <div className="course-sections">
           <div
             className={`section-title ${activeSection === 1 ? 'active' : ''}`}
@@ -85,24 +105,29 @@ const CourseView = ({ course, onBack }) => {
           {activeSection === 1 && (
             <div className="section-lessons">
               <p
-                onClick={() => setSelectedLesson('lesson1')}
+                onClick={() => selectContent('lesson1')}
                 className={selectedLesson === 'lesson1' ? 'active' : ''}
               >
                 Lekcja 1
               </p>
               <p
-                onClick={() => setSelectedLesson('lesson2')}
+                onClick={() => selectContent('lesson2')}
                 className={selectedLesson === 'lesson2' ? 'active' : ''}
               >
                 Lekcja 2
               </p>
               <p
-                onClick={() => setSelectedLesson('lesson3')}
+                onClick={() => selectContent('lesson3')}
                 className={selectedLesson === 'lesson3' ? 'active' : ''}
               >
                 Lekcja 3
               </p>
-              <p>Test z Sekcji</p>
+              <p 
+                onClick={startQuiz}
+                className={isTakingQuiz ? 'active-quiz' : ''}
+              >
+                Test z Sekcji
+              </p>
             </div>
           )}
 

@@ -81,6 +81,8 @@
     border-color: #E0E0E0;
 }
 
+/* Usunięto .edit-textarea stąd */
+
 .edit-divider {
     border: 0;
     height: 1px;

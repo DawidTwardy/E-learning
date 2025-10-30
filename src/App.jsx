@@ -8,20 +8,34 @@ import RegisterPage from './RegisterPage.jsx';
 import CourseView from './CourseView.jsx';
 import MyCoursesPage from './MyCoursesPage.jsx'; 
 import CourseEditPage from './CourseEditPage.jsx';
+import CourseDetailsPage from './CourseDetailsPage.jsx';
 import CourseAddPage from './CourseAddPage.jsx';
+import MyLearningPage from './MyLearningPage.jsx';
+import './MyLearningPage.css';
+import ProfilePage from './ProfilePage.jsx';
+import './ProfilePage.css';
+import SearchResultsPage from './SearchResultsPage.jsx';
+import './SearchResultsPage.css';
+import InstructorProfilePage from './InstructorProfilePage.jsx';
+import './InstructorProfilePage.css';
+
 
 const PAGE_HOME = 'home';
 const PAGE_INSTRUCTORS = 'instruktors';
+const PAGE_INSTRUCTOR_PROFILE = 'instructor_profile';
 const PAGE_FAVORITES = 'favorites'; 
-const PAGE_MY_COURSES = 'my_courses'; 
+const PAGE_MY_COURSES = 'my_courses';
+const PAGE_MY_LEARNING = 'my_learning';
+const PAGE_PROFILE = 'profile';
+const PAGE_SEARCH_RESULTS = 'search_results';
 const PAGE_LOGIN = 'login'; 
 const PAGE_REGISTER = 'register';
 
 const coursesData = [
-    { title: "Kurs Nauki SQL", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_sql.png"},
-    { title: "Kurs Pythona", instructor: "Jan Kowalski", rating: 4.5, imageSrc: "/src/course/placeholder_python.png"},
-    { title: "Kurs AI", instructor: "Michał Nowak", rating: 4, imageSrc: "/src/course/placeholder_ai.png"},
-    { title: "Kurs .Net Core", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_dotnet.png"},
+    { id: 1, title: "Kurs Nauki SQL", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_sql.png", description: "Poznaj podstawy i zaawansowane techniki SQL. Ten kurs nauczy Cię, jak efektywnie zarządzać bazami danych i pisać złożone zapytania."},
+    { id: 2, title: "Kurs Pythona", instructor: "Jan Kowalski", rating: 4.5, imageSrc: "/src/course/placeholder_python.png", description: "Zacznij swoją przygodę z programowaniem w Pythonie. Kurs obejmuje wszystko od podstawowej składni po tworzenie aplikacji webowych."},
+    { id: 3, title: "Kurs AI", instructor: "Michał Nowak", rating: 4, imageSrc: "/src/course/placeholder_ai.png", description: "Wprowadzenie do świata Sztucznej Inteligencji. Dowiedz się, czym są sieci neuronowe, uczenie maszynowe i jak są wykorzystywane w praktyce."},
+    { id: 4, title: "Kurs .Net Core", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_dotnet.png", description: "Buduj nowoczesne, wieloplatformowe aplikacje z .NET Core. Kurs skupia się na tworzeniu wydajnych API REST oraz aplikacji webowych."},
 ];
 
 export const StarRating = ({ rating }) => {
@@ -65,49 +79,80 @@ export const FavoriteHeart = ({ isFavorite, onToggle }) => {
     );
 };
 
-export const CourseCard = ({ course, onClick, isFavorite, onFavoriteToggle, showInstructor = true, onEdit, showFavoriteButton = true }) => (
-    <div className="course-card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
+export const CourseCard = ({ course, onClick, isFavorite, onFavoriteToggle, showInstructor = true, onEdit, showFavoriteButton = true, progress }) => {
+    const isCompleted = progress === 100;
+    
+    return (
         <div 
-            className="card-image-container" 
-            style={{ backgroundColor: course.iconColor }} 
+            className={`course-card ${isCompleted ? 'completed' : ''}`} 
+            onClick={onClick} 
+            style={{ cursor: onClick ? 'pointer' : 'default' }}
         >
-            <img 
-                src={course.imageSrc} 
-                alt={course.title} 
-                className="card-image" 
-                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x140/1B1B1B/FFFFFF?text=Kurs' }}
-            />
-        </div>
-        
-        {showFavoriteButton && (
-            <FavoriteHeart 
-                isFavorite={isFavorite}
-                onToggle={onFavoriteToggle}
-            />
-        )}
+            <div 
+                className="card-image-container" 
+                style={{ backgroundColor: course.iconColor }} 
+            >
+                <img 
+                    src={course.imageSrc} 
+                    alt={course.title} 
+                    className="card-image" 
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x140/1B1B1B/FFFFFF?text=Kurs' }}
+                />
+            </div>
+            
+            {showFavoriteButton && (
+                <FavoriteHeart 
+                    isFavorite={isFavorite}
+                    onToggle={onFavoriteToggle}
+                />
+            )}
 
-        <div className="card-info">
-            <h3 className="course-title">{course.title}</h3>
-            {showInstructor && <p className="course-instructor">{course.instructor}</p>}
-            <StarRating rating={course.rating} /> 
+            <div className="card-info">
+                <h3 className="course-title">{course.title}</h3>
+                {showInstructor && <p className="course-instructor">{course.instructor}</p>}
+                <StarRating rating={course.rating} /> 
+            </div>
+            
+            {progress > 0 && (
+                <div className="progress-bar-container">
+                    <div 
+                        className={`progress-bar-fill ${isCompleted ? 'completed' : ''}`}
+                        style={{ width: `${progress}%` }}
+                    ></div>
+                    <span className="progress-bar-text">{progress}%</span>
+                </div>
+            )}
+            
+            {onEdit && (
+                <button className="card-edit-button" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+                    Edytuj
+                </button>
+            )}
         </div>
-        {onEdit && (
-            <button className="card-edit-button" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
-                Edytuj
-            </button>
-        )}
-    </div>
-);
+    );
+};
 
-const LoggedInMenu = ({ handleLogout }) => ( 
+
+const LoggedInMenu = ({ handleLogout, navigateToPage }) => ( 
     <div className="profile-menu">
-        <button className="menu-item">Zmień Dane</button>
+        <button className="menu-item" onClick={() => navigateToPage(PAGE_PROFILE)}>
+            Zmień Dane
+        </button>
         <div className="menu-divider"></div>
         <button className="menu-item logout" onClick={handleLogout}>Wyloguj się</button>
     </div>
 );
 
-const Header = ({ currentPage, setCurrentPage, isLoggedIn, setIsLoggedIn, navigateToPage }) => {
+const Header = ({ 
+    currentPage, 
+    setCurrentPage, 
+    isLoggedIn, 
+    setIsLoggedIn, 
+    navigateToPage, 
+    searchQuery, 
+    setSearchQuery, 
+    handleSearchSubmit 
+}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => setIsMenuOpen(prev => !prev);
 
@@ -142,7 +187,18 @@ const Header = ({ currentPage, setCurrentPage, isLoggedIn, setIsLoggedIn, naviga
                         alt="Wyszukaj" 
                         className="search-icon-image" 
                     />
-                    <input type="text" placeholder={searchPlaceholder} className="search-input" />
+                    <input 
+                        type="text" 
+                        placeholder={searchPlaceholder} 
+                        className="search-input" 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearchSubmit();
+                            }
+                        }}
+                    />
                 </div>
             </div>
             
@@ -157,13 +213,22 @@ const Header = ({ currentPage, setCurrentPage, isLoggedIn, setIsLoggedIn, naviga
                     </a>
 
                     {isLoggedIn && (
-                        <a 
-                            href="#" 
-                            onClick={() => navigateToPage(PAGE_MY_COURSES)}
-                            className={currentPage === PAGE_MY_COURSES ? 'active' : ''}
-                        >
-                            Moje Szkolenia
-                        </a>
+                        <>
+                            <a 
+                                href="#" 
+                                onClick={() => navigateToPage(PAGE_MY_LEARNING)}
+                                className={currentPage === PAGE_MY_LEARNING ? 'active' : ''}
+                            >
+                                Moja Nauka
+                            </a>
+                            <a 
+                                href="#" 
+                                onClick={() => navigateToPage(PAGE_MY_COURSES)}
+                                className={currentPage === PAGE_MY_COURSES ? 'active' : ''}
+                            >
+                                Moje Kursy
+                            </a>
+                        </>
                     )}
                     
                     {!isLoggedIn && (
@@ -209,7 +274,7 @@ const Header = ({ currentPage, setCurrentPage, isLoggedIn, setIsLoggedIn, naviga
                             />
                         </>
                     )}
-                    {isMenuOpen && isLoggedIn && <LoggedInMenu handleLogout={handleLogout} />}
+                    {isMenuOpen && isLoggedIn && <LoggedInMenu handleLogout={handleLogout} navigateToPage={navigateToPage} />}
                 </div>
             </div>
         </header>
@@ -219,9 +284,12 @@ const Header = ({ currentPage, setCurrentPage, isLoggedIn, setIsLoggedIn, naviga
 const App = () => {
     const [currentPage, setCurrentPage] = useState(PAGE_HOME); 
     const [isLoggedIn, setIsLoggedIn] = useState(true);
-    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [viewingCourse, setViewingCourse] = useState(null);
+    const [detailsCourse, setDetailsCourse] = useState(null);
     const [editingCourse, setEditingCourse] = useState(null);
     const [isAddingCourse, setIsAddingCourse] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedInstructor, setSelectedInstructor] = useState(null);
 
     const [dummyFavorites, setDummyFavorites] = useState({});
     const toggleDummyFavorite = (title) => {
@@ -232,9 +300,12 @@ const App = () => {
     };
 
     const navigateToPage = (page) => {
-        setSelectedCourse(null);
+        setViewingCourse(null);
+        setDetailsCourse(null);
         setEditingCourse(null);
         setIsAddingCourse(false);
+        setSearchQuery('');
+        setSelectedInstructor(null);
         setCurrentPage(page);
     };
 
@@ -247,14 +318,44 @@ const App = () => {
     };
 
     const handleBackFromViews = () => {
-        setSelectedCourse(null);
+        setViewingCourse(null);
+        setDetailsCourse(null);
         setEditingCourse(null);
         setIsAddingCourse(false);
+        setSelectedInstructor(null);
+        if (currentPage === PAGE_PROFILE) {
+            navigateToPage(PAGE_HOME);
+        }
+    };
+
+    const handleShowDetails = (course) => {
+        setDetailsCourse(course);
+    };
+    
+    const handleShowInstructorProfile = (instructor) => {
+        setSelectedInstructor(instructor);
+        setCurrentPage(PAGE_INSTRUCTOR_PROFILE);
+    };
+
+    const handleEnroll = (course) => {
+        console.log(`Zapisano na kurs: ${course.title}`);
+        setDetailsCourse(null);
+        setViewingCourse(course);
     };
     
     const handleCourseCreate = (newCourse) => {
         alert(`Pomyślnie stworzono kurs: ${newCourse.title}`);
         handleBackFromViews();
+    };
+
+    const handleSearchSubmit = () => {
+        if (searchQuery.trim() === '') return;
+        setViewingCourse(null);
+        setDetailsCourse(null);
+        setEditingCourse(null);
+        setIsAddingCourse(false);
+        setSelectedInstructor(null);
+        setCurrentPage(PAGE_SEARCH_RESULTS);
     };
 
     const renderPageContent = () => {
@@ -276,11 +377,35 @@ const App = () => {
             );
         }
 
-        if (selectedCourse) {
+        if (detailsCourse) {
+            return (
+                <CourseDetailsPage
+                    course={detailsCourse}
+                    onBack={handleBackFromViews}
+                    onEnroll={handleEnroll}
+                />
+            );
+        }
+
+        if (viewingCourse) {
             return (
                 <CourseView 
-                    course={selectedCourse} 
+                    course={viewingCourse} 
                     onBack={handleBackFromViews} 
+                />
+            );
+        }
+        
+        if (selectedInstructor) {
+            const instructorCourses = coursesData.filter(
+                course => course.instructor === selectedInstructor.name
+            );
+            return (
+                <InstructorProfilePage
+                    instructor={selectedInstructor}
+                    courses={instructorCourses}
+                    onCourseClick={handleShowDetails}
+                    onBack={() => navigateToPage(PAGE_INSTRUCTORS)}
                 />
             );
         }
@@ -291,16 +416,37 @@ const App = () => {
             case PAGE_REGISTER:
                 return <RegisterPage setCurrentPage={navigateToPage} setIsLoggedIn={setIsLoggedIn} />;
             case PAGE_INSTRUCTORS:
-                return <InstructorsPage />;
+                return <InstructorsPage onInstructorClick={handleShowInstructorProfile} />;
             case PAGE_FAVORITES:
                 return <FavoritesPage onNavigateToHome={() => navigateToPage(PAGE_HOME)} />;
-            case PAGE_MY_COURSES: 
+            case PAGE_MY_LEARNING:
+                return (
+                    <MyLearningPage
+                        onCourseClick={setViewingCourse}
+                        onNavigateToHome={() => navigateToPage(PAGE_HOME)}
+                    />
+                );
+            case PAGE_MY_COURSES:
                 return (
                     <MyCoursesPage 
-                        setSelectedCourse={setSelectedCourse}
+                        setSelectedCourse={setViewingCourse}
                         onNavigateToHome={() => navigateToPage(PAGE_HOME)} 
                         onStartEdit={handleStartEdit}
                         onStartAddCourse={handleStartAddCourse}
+                    />
+                );
+            case PAGE_PROFILE:
+                return (
+                    <ProfilePage 
+                        onBack={() => navigateToPage(PAGE_HOME)} 
+                    />
+                );
+            case PAGE_SEARCH_RESULTS:
+                return (
+                    <SearchResultsPage
+                      allCourses={coursesData}
+                      query={searchQuery}
+                      onCourseClick={handleShowDetails}
                     />
                 );
             case PAGE_HOME:
@@ -313,7 +459,7 @@ const App = () => {
                                 <CourseCard 
                                     key={index} 
                                     course={course} 
-                                    onClick={() => setSelectedCourse(course)}
+                                    onClick={() => handleShowDetails(course)}
                                     isFavorite={!!dummyFavorites[course.title]}
                                     onFavoriteToggle={() => toggleDummyFavorite(course.title)}
                                     showInstructor={true}
@@ -334,6 +480,9 @@ const App = () => {
                 isLoggedIn={isLoggedIn} 
                 setIsLoggedIn={setIsLoggedIn} 
                 navigateToPage={navigateToPage}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                handleSearchSubmit={handleSearchSubmit}
             />
             
             {renderPageContent()}

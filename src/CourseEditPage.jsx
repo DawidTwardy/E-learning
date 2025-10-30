@@ -300,6 +300,8 @@ export const QuizEditor = ({ quiz, onQuizChange }) => {
 
 const CourseEditPage = ({ course, onBack }) => {
   const [title, setTitle] = useState(course.title);
+  const [description, setDescription] = useState(course.description || "Przykładowy opis pobrany z obiektu kursu...");
+  const [thumbnailUrl, setThumbnailUrl] = useState(course.imageSrc || "/src/course/placeholder_sql.png");
   const [sections, setSections] = useState(MOCK_SECTIONS);
   const [openItems, setOpenItems] = useState({});
 
@@ -312,7 +314,7 @@ const CourseEditPage = ({ course, onBack }) => {
 
   const handleSave = (e) => {
     e.preventDefault();
-    console.log("Zapisywanie danych:", { title, sections });
+    console.log("Zapisywanie danych:", { title, description, thumbnailUrl, sections });
     alert(`Zapisano zmiany dla kursu: ${title}`);
     onBack();
   };
@@ -456,6 +458,44 @@ const CourseEditPage = ({ course, onBack }) => {
           </div>
 
           <hr className="edit-divider" />
+
+          <h3
+            className={`collapsible-header ${!!openItems['info'] ? 'open' : ''}`}
+            onClick={() => toggleItem('info')}
+            style={{ marginTop: 0, marginBottom: '20px' }}
+          >
+            Informacje Podstawowe
+          </h3>
+
+          {!!openItems['info'] && (
+            <div className="section-item" style={{ marginBottom: '20px', paddingBottom: '30px' }}>
+              <div className="edit-form-group">
+                <label htmlFor="courseDescription">Opis Kursu</label>
+                {/* Zastąpiono textarea edytorem RTE */}
+                <div className="text-editor-wrapper">
+                  <RteToolbar />
+                  <div
+                    className="edit-content-editable"
+                    contentEditable="true"
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => setDescription(e.target.innerHTML)}
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
+                </div>
+              </div>
+              <div className="edit-form-group" style={{marginTop: '20px'}}>
+                <label htmlFor="courseThumbnail">URL Miniaturki</label>
+                <input
+                  type="text"
+                  id="courseThumbnail"
+                  className="edit-input"
+                  value={thumbnailUrl}
+                  onChange={(e) => setThumbnailUrl(e.target.value)}
+                  placeholder="Np. /src/course/placeholder_nowy.png"
+                />
+              </div>
+            </div>
+          )}
 
           <h3>Zawartość Kursu</h3>
           

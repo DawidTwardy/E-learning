@@ -112,6 +112,14 @@
     box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
 }
 
+.section-lessons p.active-quiz {
+    background-color: #f44336;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
+}
+
+
 .back-button {
     margin-top: auto;
     align-self: flex-start;
