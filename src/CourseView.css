@@ -7,7 +7,7 @@
     align-items: center;
     padding: 40px;
     position: relative;
-    z-index: 1; /* Poniżej headera */
+    z-index: 1;
 }
 
 .course-view-content {
@@ -22,7 +22,6 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-/* LEWA STRONA — wideo / PDF / notatki */
 .video-section {
     flex: 3;
     background-color: #2a2a2a;
@@ -53,7 +52,6 @@
     border: none;
 }
 
-/* PRAWA STRONA — sekcje kursu */
 .course-sections {
     flex: 1;
     background-color: #292929;
@@ -114,7 +112,6 @@
     box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
 }
 
-/* PRZYCISK POWROTU */
 .back-button {
     margin-top: auto;
     align-self: flex-start;

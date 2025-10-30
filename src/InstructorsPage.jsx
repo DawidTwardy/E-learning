@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css'; 
 import './InstructorsPage.css'; 
 
-// --- DANE INSTRUKTORÓW ---
 const instructorsData = [
   { 
     name: "Michał Nowak", 
@@ -24,7 +23,6 @@ const instructorsData = [
   }
 ];
 
-// --- KOMPONENT KARTY INSTRUKTORA ---
 const InstructorCard = ({ instructor }) => (
   <div className="instructor-card">
     <div className="instructor-avatar-container">
@@ -50,12 +48,10 @@ const InstructorCard = ({ instructor }) => (
   </div>
 );
 
-
-// --- KOMPONENT GŁÓWNY PODSTRONY INSTRUKTORZY ---
 const InstructorsPage = () => {
   return (
     <main className="main-content">
-      <h2 className="section-title"></h2> 
+      <h2 className="page-title">Instruktorzy</h2> 
       
       <div className="instructor-list">
         {instructorsData.map((instructor, index) => (

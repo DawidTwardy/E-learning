@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-// Zmieniamy import na ujednolicony plik CSS
+
 import './LoginReg.css'; 
 
-// Używamy tego samego komponentu EyeIcon z podanej struktury
+
 const EyeIcon = ({ show, toggle }) => (
     <img 
         src={show ? '/src/icon/eye.png' : '/src/icon/eye-slash.png'} 

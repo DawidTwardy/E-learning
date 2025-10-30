@@ -1,0 +1,72 @@
+import React, { useState } from 'react';
+import './App.css'; 
+import './Favorites.css'; 
+import { CourseCard } from './App.jsx';
+
+const initialMyCoursesData = [
+  { id: 1, title: "Kurs Nauki SQL", instructor: "Michał Nowak", rating: 5, imageSrc: "/src/course/placeholder_sql.png", iconColor: "#007BFF" },
+  { id: 2, title: "Kurs Pythona", instructor: "Jan Kowalski", rating: 4.5, imageSrc: "/src/course/placeholder_python.png", iconColor: "#FFC107" },
+];
+
+const EmptyCreatedCoursesMessage = ({ onStartAddCourse }) => {
+  return (
+    <div className="empty-favorites-container">
+      <h3 className="empty-favorites-title">Nie stworzyłeś jeszcze żadnych kursów</h3>
+      <div className="empty-favorites-icon-wrapper">
+        <img 
+            src="/src/NoCourse.png" 
+            alt="Brak kursów"
+            className="nocourse-icon-image"
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x250/242424/FFFFFF?text=Brak+Kursów' }}
+        />
+      </div>
+      <button 
+        className="browse-courses-button"
+        style={{ backgroundColor: '#28A745', color: '#FFFFFF' }}
+        onClick={onStartAddCourse}
+      >
+        Stwórz swój pierwszy kurs
+      </button>
+    </div>
+  );
+};
+
+const MyCoursesPage = ({ setSelectedCourse, onNavigateToHome, onStartEdit, onStartAddCourse }) => {
+  const [myCourses, setMyCourses] = useState(initialMyCoursesData); 
+
+  const handleEditCourse = (course) => {
+    onStartEdit(course);
+  };
+
+  return (
+    <main className="main-content">
+      <div className="page-header-actions">
+        <h2 className="page-title" style={{ marginBottom: 0 }}>Moje Stworzone Kursy</h2>
+        {myCourses.length > 0 && (
+          <button className="add-course-button" onClick={onStartAddCourse}>
+            Dodaj nowy kurs
+          </button>
+        )}
+      </div>
+      
+      {myCourses.length > 0 ? (
+        <div className="courses-list">
+          {myCourses.map((course) => (
+            <CourseCard 
+              key={course.id} 
+              course={course}
+              onClick={() => setSelectedCourse(course)}
+              showInstructor={false}
+              onEdit={() => handleEditCourse(course)}
+              showFavoriteButton={false}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyCreatedCoursesMessage onNavigateToHome={onNavigateToHome} onStartAddCourse={onStartAddCourse} />
+      )}
+    </main>
+  );
+};
+
+export default MyCoursesPage;

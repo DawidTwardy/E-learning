@@ -1,17 +1,15 @@
-/* InstructorsPage.css */
-
 .instructor-list {
     display: flex; 
     flex-wrap: wrap; 
     gap: 40px; 
-    justify-content: center; /* Wyśrodkowanie kart */
+    justify-content: center;
 }
 
 .instructor-card {
     background-color: #1B1B1B;
     border-radius: 20px; 
     padding: 40px 30px; 
-    width: 380px; /* Stała szerokość dla kart instruktorów */
+    width: 380px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6); 
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
